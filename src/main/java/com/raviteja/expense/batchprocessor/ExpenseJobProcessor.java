@@ -11,6 +11,8 @@ public class ExpenseJobProcessor implements ItemProcessor<Transaction, TransItem
         transItemEntity.setTransactionDate(item.transactionDate());
         String description = item.description();
         transItemEntity.setTransactionMessage(description);
+        transItemEntity.setIsIncome(item.isIncome());
+        transItemEntity.setIsSharedExpense(item.isSharedExpense());
         return transItemEntity;
     }
 }

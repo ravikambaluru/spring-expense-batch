@@ -37,8 +37,8 @@ public class ExpenseJobReader implements ItemReader<Transaction> {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                             Date date = formatter.parse(row.get(0).getText());
                             String desc = row.get(2).getText();
-                            Double amount = row.get(3).getText().isEmpty() ? 0 : Double.valueOf(row.get(3).getText());
-                            transactions.add(new Transaction(date, desc, amount));
+                            Double amount = row.get(3).getText().isEmpty() ? Double.valueOf(row.get(4).getText()) : Double.valueOf(row.get(3).getText());
+                            transactions.add(new Transaction(date, desc, amount,row.get(3).getText().isEmpty(),false));
                         }
                     }
                 }

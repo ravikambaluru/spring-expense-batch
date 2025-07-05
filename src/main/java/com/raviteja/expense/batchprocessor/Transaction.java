@@ -5,6 +5,8 @@ import java.util.Date;
 public record Transaction(
         Date transactionDate,
         String description,
-        Double amount
+        Double amount,
+        Boolean isIncome,
+        Boolean isSharedExpense
 ) {
 }

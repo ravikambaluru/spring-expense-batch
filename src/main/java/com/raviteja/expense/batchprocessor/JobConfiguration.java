@@ -23,6 +23,9 @@ import java.util.List;
 @EnableBatchProcessing
 public class JobConfiguration {
 
+    public static final String START_DATE = "2025-01-01 00:00:00";
+    public static final String END_DATE = "2025-05-31 23:59:59";
+    public static final String FILE_PATH = "statements/statement-june-july.pdf";
     @Autowired
     private ExpenseJobWriter expenseJobWriter;
     @Autowired
@@ -46,8 +49,8 @@ public class JobConfiguration {
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("=== Deleting active month transactions ===");
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    Date startDate=formatter.parse("2025-05-01 00:00:00");
-                    Date endDate=formatter.parse("2025-05-31 23:59:59");
+                    Date startDate=formatter.parse(START_DATE);
+                    Date endDate=formatter.parse(END_DATE);
                     List<TransItemEntity> activeTransactions = transactionItemRepository.findByTransactionDateBetween(startDate, endDate);
                     System.out.println("=========== retrieved active transactions of size "+activeTransactions.size());
                     transactionItemRepository.deleteAll(activeTransactions);
@@ -71,7 +74,7 @@ public class JobConfiguration {
     @Bean
     public ExpenseJobReader expenseJobReader() throws Exception {
         System.out.println("======= in reader bean =======");
-        return new ExpenseJobReader("statements/statement-may.pdf");
+        return new ExpenseJobReader(FILE_PATH);
     }
 
     @Bean

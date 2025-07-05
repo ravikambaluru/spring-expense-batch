@@ -17,4 +17,6 @@ public class TransItemEntity {
     private Double transactionAmount;
     @OneToOne
     private CategoryEntity category;
+    private Boolean isIncome;
+    private Boolean isSharedExpense;
 }
