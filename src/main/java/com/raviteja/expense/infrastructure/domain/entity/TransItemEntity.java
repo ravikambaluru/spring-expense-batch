@@ -19,4 +19,5 @@ public class TransItemEntity {
     private CategoryEntity category;
     private Boolean isIncome;
     private Boolean isSharedExpense;
+    private Boolean canIgnoreTransaction;
 }

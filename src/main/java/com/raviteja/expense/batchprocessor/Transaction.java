@@ -7,6 +7,7 @@ public record Transaction(
         String description,
         Double amount,
         Boolean isIncome,
-        Boolean isSharedExpense
+        Boolean isSharedExpense,
+        Boolean canIgnoreTransaction
 ) {
 }

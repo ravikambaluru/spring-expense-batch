@@ -13,6 +13,7 @@ public class ExpenseJobProcessor implements ItemProcessor<Transaction, TransItem
         transItemEntity.setTransactionMessage(description);
         transItemEntity.setIsIncome(item.isIncome());
         transItemEntity.setIsSharedExpense(item.isSharedExpense());
+        transItemEntity.setCanIgnoreTransaction(item.canIgnoreTransaction());
         return transItemEntity;
     }
 }
