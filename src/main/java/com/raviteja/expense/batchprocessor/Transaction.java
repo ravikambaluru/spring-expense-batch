@@ -1,9 +1,9 @@
 package com.raviteja.expense.batchprocessor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record Transaction(
-        Date transactionDate,
+        LocalDate transactionDate,
         String description,
         Double amount,
         Boolean isIncome,

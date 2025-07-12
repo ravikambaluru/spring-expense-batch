@@ -1,7 +1,8 @@
 package com.raviteja.expense.batchprocessor;
 
-import com.raviteja.expense.infrastructure.domain.entity.TransItemEntity;
+import com.raviteja.expense.infrastructure.domain.entity.TransactionEntity;
 import com.raviteja.expense.infrastructure.domain.repository.TransactionItemRepository;
+import com.raviteja.expense.infrastructure.domain.repository.UserRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -13,9 +14,13 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -25,11 +30,13 @@ public class JobConfiguration {
 
     public static final String START_DATE = "2025-06-01 00:00:00";
     public static final String END_DATE = "2025-07-31 23:59:59";
-    public static final String FILE_PATH = "statements/statement-june-july-25.pdf";
+    public static final String FILE_PATH = "statements/statement-jan-july-25.pdf";
     @Autowired
     private ExpenseJobWriter expenseJobWriter;
     @Autowired
     private TransactionItemRepository transactionItemRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public Job expenseJob(JobRepository jobRepository,
@@ -48,10 +55,10 @@ public class JobConfiguration {
         return new StepBuilder("deleteActiveMonthTransactions", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("=== Deleting active month transactions ===");
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    Date startDate=formatter.parse(START_DATE);
-                    Date endDate=formatter.parse(END_DATE);
-                    List<TransItemEntity> activeTransactions = transactionItemRepository.findByTransactionDateBetween(startDate, endDate);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDate startDate=LocalDate.parse(START_DATE,formatter);
+                    LocalDate endDate=LocalDate.parse(END_DATE,formatter);
+                    List<TransactionEntity> activeTransactions = transactionItemRepository.findByTransactionDateBetween(startDate, endDate);
                     System.out.println("=========== retrieved active transactions of size "+activeTransactions.size());
                     transactionItemRepository.deleteAll(activeTransactions);
                     return RepeatStatus.FINISHED;
@@ -64,7 +71,7 @@ public class JobConfiguration {
                                PlatformTransactionManager transactionManager) throws Exception {
         System.out.println("========= step is being executed ===========");
         return new StepBuilder("expenseJobStep", jobRepository)
-                .<Transaction, TransItemEntity>chunk(10, transactionManager)
+                .<Transaction, TransactionEntity>chunk(10, transactionManager)
                 .reader(expenseJobReader())
                 .processor(expenseJobProcessor())
                 .writer(expenseJobWriter)
@@ -79,6 +86,6 @@ public class JobConfiguration {
 
     @Bean
     public ExpenseJobProcessor expenseJobProcessor() {
-        return new ExpenseJobProcessor();
+        return new ExpenseJobProcessor(userRepository);
     }
 }

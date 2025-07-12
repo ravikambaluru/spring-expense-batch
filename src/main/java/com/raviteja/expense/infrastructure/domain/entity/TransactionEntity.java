@@ -3,21 +3,27 @@ package com.raviteja.expense.infrastructure.domain.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transactions")
 @Data
-public class TransItemEntity {
+public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date transactionDate;
+    private LocalDate transactionDate;
     private String transactionMessage;
     private Double transactionAmount;
-    @OneToOne
+    @ManyToOne
     private CategoryEntity category;
+    @ManyToOne
+    @JoinColumn(name = "paid_by_id")
+    private UserEntity paidBy;
     private Boolean isIncome;
-    private Boolean isSharedExpense;
+    private Boolean isSharedExpense=false;
     private Boolean canIgnoreTransaction;
+    private Boolean isSettlement = false;
+
+    private String notes;
 }
