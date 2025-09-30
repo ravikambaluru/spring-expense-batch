@@ -28,9 +28,9 @@ import java.util.List;
 @EnableBatchProcessing
 public class JobConfiguration {
 
-    public static final String START_DATE = "2025-06-01 00:00:00";
-    public static final String END_DATE = "2025-07-31 23:59:59";
-    public static final String FILE_PATH = "statements/statement-jan-july-25.pdf";
+    public static final String START_DATE = "2025-07-01 00:00:00";
+    public static final String END_DATE = "2025-09-30 23:59:59";
+    public static final String FILE_PATH = "statements/statement-01-07-2025to30-09-2025.pdf";
     @Autowired
     private ExpenseJobWriter expenseJobWriter;
     @Autowired

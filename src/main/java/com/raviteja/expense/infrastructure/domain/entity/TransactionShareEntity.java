@@ -11,7 +11,7 @@ public class TransactionShareEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "transaction_id")
     private TransactionEntity transaction;
 
