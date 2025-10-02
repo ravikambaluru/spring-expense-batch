@@ -58,20 +58,12 @@ public class ExpenseJobReader implements ItemReader<Transaction> {
                         return sea.extract(page).stream().skip(1);
                     })
                     // keep only tables where first row's first cell contains "Joint Holder"
-                    .filter(table -> {
-                        List<List<RectangularTextContainer>> rows = table.getRows();
-                        if (rows.isEmpty()) return false;
-                        List<RectangularTextContainer> firstRow = rows.getFirst();
-                        if (firstRow.isEmpty()) return false;
-                        String firstCell = firstRow.getFirst().getText();
-                        return firstCell != null && !firstCell.contains("Joint Holder");
-                    })
                     // flatten to a stream of rows (each row is List<RectangularTextContainer>)
                     .flatMap(table -> table.getRows().stream())
                     // filter rows that look like transaction rows (size and non-empty date cell)
                     .filter(row -> row.size() >= 3
                             && row.getFirst() != null && !row.getFirst().getText().isEmpty()
-                            && !"Tran Date".equals(row.getFirst().getText()))
+                            && !"Tran Date".equals(row.getFirst().getText()) && !row.getFirst().getText().contains("Joint Holder"))
                     // map each row to an Optional<Transaction> (empty => skip)
                     .map(row -> {
                         try {
